@@ -15,19 +15,24 @@ namespace bit285_lucky_number_database.Controllers
         public ActionResult Spin()
         {
             LuckyNumber myLuck = new LuckyNumber { Number = 7, Balance = 4 };
+            dbc.LuckyNumbers.Add(myLuck);
+            dbc.SaveChanges(); //touch the database
             return View(myLuck);
         }
 
         [HttpPost]
         public ActionResult Spin(LuckyNumber lucky)
         {
-            if(lucky.Balance>0)
+            LuckyNumber databaseLuck = dbc.LuckyNumbers.Where(m=>m.LuckyNumberID ==1).First();
+            //change the balance in the database
+                if(databaseLuck.Balance>0)
             {
-                lucky.Balance -= 1;
+                databaseLuck.Balance -= 1;
             }
-
-
-            return View(lucky);
+            //update the number in the database useing the form submission value
+            databaseLuck.Number = lucky.Number;
+            dbc.SaveChanges();
+            return View(databaseLuck);
         }
     }
 }
